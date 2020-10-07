@@ -20,7 +20,7 @@ export default {
     titles: {
       type: Array,
       default() {
-        return {};
+        return [];
       },
     },
   },
