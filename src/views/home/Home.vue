@@ -42,11 +42,12 @@ import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodList from "components/content/goods/GoodList";
 import Scroll from "components/common/scroll/Scroll";
-import BackTop from "components/content/backTop/BackTop";
+// import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
 import { debounce } from "common/utils";
+import { itemListenerMixin,backTopMixin } from "common/mixin";
 
 export default {
   name: "Home",
@@ -58,8 +59,9 @@ export default {
     TabControl,
     GoodList,
     Scroll,
-    BackTop,
+    // BackTop,
   },
+  mixins: [itemListenerMixin,backTopMixin],
   data() {
     return {
       banners: [],
@@ -70,7 +72,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
+      // isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
@@ -87,11 +89,14 @@ export default {
   activated() {
     // console.log("activated");
     this.$refs.scroll.scrollTo(0, this.saveY);
-    this.$refs.scroll.refresh()
+    this.$refs.scroll.refresh();
   },
   deactivated() {
     // console.log("deactivated");
+    // 1、保存y值
     this.saveY = this.$refs.scroll.getScrollY();
+    // 2、取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   created() {
     // 1.请求多个数据
@@ -114,20 +119,26 @@ export default {
   mounted() {
     //1、图片加载完成的事件监听
     // 用防抖动函数解决refresh频繁调用的问题
-    const refresh = debounce(this.$refs.scroll.refresh, 200);
-
+    // const refresh = debounce(this.$refs.scroll.refresh, 200);
     // 这里可以保证监听到的时候，this.$refs.scroll是有值的
     // 3、监听item中图片加载完成
-    this.$bus.$on("itemImageLoad", () => {
-      // console.log("---");
-      refresh();
-      // this.$refs.scroll.refresh();
-    });
-
+    // 对坚挺的时间进行保存
+    // this.itemImgListener = () => {
+    // console.log("---");
+    // refresh();
+    // this.$refs.scroll.refresh();
+    // }
+    // this.$bus.$on("itemImageLoad",this.itemImgListener);
     // 2、获取tabControl的offsetTop
     // 所有的组件都有一个属性$el,用来获取组件中的元素
     // console.log(this.$refs.tabControl.$el.offsetTop);
     // this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+    
+    //此时可以拿到
+    //this.$refs.tabControl1
+    //this.$refs.tabControl2
+    //在created中拿不到
+    this.tabClick(0)
   },
   methods: {
     /**
@@ -150,7 +161,7 @@ export default {
       this.$refs.tabControl2.currentIndex = index;
     },
 
-    backClick() {
+    // backClick() {
       // console.log('回到');
       // this.$refs.scroll-->scroll组件
       // 组件.scroll-->scroll组件里的scroll对象数据（data数据）
@@ -160,14 +171,15 @@ export default {
 
       // this.$refs.scroll组件
       // 组件.scrollTo--->组件直接调用里面封装的方法
-      this.$refs.scroll.scrollTo(0, 0);
-    },
+      // this.$refs.scroll.scrollTo(0, 0);
+    // },
 
     //
     contentScroll(position) {
       // console.log(position);
       // 1、判断BackTop是否显示
-      this.isShowBackTop = -position.y > 1000;
+      // this.isShowBackTop = -position.y > 1000;
+      this.listenShowBackTop(position)
       // 2、决定TabControl是否吸顶（position:fixed）
       this.isTabFixed = -position.y > this.tabOffsetTop;
     },
@@ -239,7 +251,7 @@ export default {
   z-index: 9;
 }
 /* .content {
-    height: calc(100% - 100px);
+    height: calc(100% - 44px-49px);
     overflow: hidden;
     margin-top: 44px;
   } */

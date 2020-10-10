@@ -1,4 +1,5 @@
 <template>
+<!-- v-if="Object.keys(paramInfo).length !== 0：在没有数据的情况下根组件不会渲染 -->
   <div class="param-info" v-if="Object.keys(paramInfo).length !== 0">
     <table
       v-for="(table, index) in paramInfo.sizes"

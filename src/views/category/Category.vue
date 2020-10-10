@@ -1,13 +1,12 @@
 <template>
   <div class="wrapper">
-
     <!-- 1\无论是否设置为click:false,button都可以点击 -->
     <button @click="btnClick">按钮</button>
 
     <!-- 2、必须设置为click：true，那么div才能监听点击 -->
     <div @click="divClick">呵呵呵</div>
     <ul class="content">
-      <button @click='btnClick'>按钮</button>
+      <button @click="btnClick">按钮</button>
       <li>分类的列表1</li>
       <li>分类的列表2</li>
       <li>分类的列表3</li>
@@ -109,10 +108,15 @@
       <li>分类的列表99</li>
       <li>分类的列表100</li>
     </ul>
+
+    <back-top @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
   
+
 <script>
+import { backTopMixin } from "common/mixin";
+
 import BScorll from "better-scroll";
 export default {
   name: "Category",
@@ -121,29 +125,30 @@ export default {
       scroll: null,
     };
   },
+  mixins: [backTopMixin],
   //组件创建完后调用
   mounted() {
     // this.scroll = new BScorll(".wrapper",{
-    this.scroll = new BScorll(document.querySelector('.wrapper'), {
-      probeType:3,
-      pullUpLoad:true,
-      click:true
+    this.scroll = new BScorll(document.querySelector(".wrapper"), {
+      probeType: 3,
+      pullUpLoad: true,
+      click: true,
     });
-    this.scroll.on('scroll',(position)=>{
+    this.scroll.on("scroll", (position) => {
       console.log(position);
-    })
-    this.scroll.on('pullingUp',()=>{
-      console.log('上拉加载更多');
-    })
+    });
+    this.scroll.on("pullingUp", () => {
+      console.log("上拉加载更多");
+    });
   },
-  methods:{
-    btnClick(){
-      console.log('btn');
+  methods: {
+    btnClick() {
+      console.log("btn");
     },
-    divClick(){
-      console.log('div');
-    }
-  }
+    divClick() {
+      console.log("div");
+    },
+  },
 };
 </script>
   

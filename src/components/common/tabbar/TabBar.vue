@@ -18,7 +18,7 @@ export default {
 #tab-bar {
   display: flex;
   background-color: #f6f6f6;
-
+height: 49px;
   position: fixed;
   left: 0;
   right: 0;
